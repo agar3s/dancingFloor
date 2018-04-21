@@ -40,6 +40,7 @@ class GameScene extends Phaser.Scene {
 
     // register a basic mouse listener
     this.minionOnHand = this.add.sprite(0, 0, 'minion')
+
     this.minionOnHand.alpha = 0.6
     this.cursor = {
       boardCoords: {i:0, j:0}
@@ -66,27 +67,28 @@ class GameScene extends Phaser.Scene {
   }
 
   onMouseMove (pointer) {
+    let positionUpdated = false
     if (pointer.position.x >= this.padding.left && 
         pointer.position.x < this.padding.left + this.dancing.rows*this.cellWidth) {
       this.cursor.i = (~~((pointer.position.x-this.padding.left) / this.cellWidth))
-      
-      this.minionOnHand.alpha = 0.6
-    } else {
-      this.minionOnHand.alpha = 0
+      positionUpdated = true
     }
 
-    if ( this.minionOnHand.alpha && 
+    if ( positionUpdated && 
       pointer.position.y >= this.padding.top && 
         pointer.position.y < this.padding.top + this.dancing.cols*this.cellHeight) {
       this.cursor.j = (~~((pointer.position.y-this.padding.top) / this.cellHeight))
-      this.minionOnHand.alpha = 0.6
+      positionUpdated = true
     } else {
-      this.minionOnHand.alpha = 0
+      positionUpdated = false
     }
     
-    if (this.minionOnHand.alpha) {
+    if (positionUpdated) {
+      this.minionOnHand.alpha = 0.6
       this.minionOnHand.y = this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
       this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
+    } else {
+      this.minionOnHand.alpha = 0
     }
   }
 
