@@ -18,7 +18,7 @@ class GameScene extends Phaser.Scene {
 
   preload () {
     this.load.spritesheet('cell', '../assets/CellFloor.png', { frameWidth: 100, frameHeight: 100 })
-
+    this.load.spritesheet('minion', '../assets/minion.png', { frameWidth: 80, frameHeight: 80 })
   }
 
   create () {
@@ -30,6 +30,8 @@ class GameScene extends Phaser.Scene {
         this.add.sprite(i*this.cellWidth + offsetX, j*this.cellHeight + offsetY, 'cell')
       }
     }
+
+    this.add.sprite(500, 300, 'minion')
   }
 
   update (time, dt) {
