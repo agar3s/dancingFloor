@@ -19,7 +19,8 @@ class GameScene extends Phaser.Scene {
 
   preload () {
     this.load.spritesheet('cell', '../assets/CellFloor.png', { frameWidth: 100, frameHeight: 100 })
-    this.load.spritesheet('minion', '../assets/minion.png', { frameWidth: 80, frameHeight: 80 })
+    this.load.spritesheet('minion', '../assets/minion.png', { frameWidth: 60, frameHeight: 60 })
+    this.load.spritesheet('baseCard', '../assets/baseCard.png', { frameWidth: 80, frameHeight: 120 })
   }
 
   create () {
@@ -45,6 +46,14 @@ class GameScene extends Phaser.Scene {
     }
     this.input.on('pointermove', this.onMouseMove, this)
     this.input.on('pointerdown', this.onMouseClick, this)
+
+
+    // displays the hand
+    this.add.sprite(200, 700, 'baseCard')
+    this.add.sprite(300, 700, 'baseCard')
+    this.add.sprite(400, 700, 'baseCard')
+    this.add.sprite(500, 700, 'baseCard')
+    this.add.sprite(600, 700, 'baseCard')
   }
 
   update (time, dt) {
@@ -60,13 +69,24 @@ class GameScene extends Phaser.Scene {
     if (pointer.position.x >= this.padding.left && 
         pointer.position.x < this.padding.left + this.dancing.rows*this.cellWidth) {
       this.cursor.i = (~~((pointer.position.x-this.padding.left) / this.cellWidth))
-      this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
+      
+      this.minionOnHand.alpha = 0.6
+    } else {
+      this.minionOnHand.alpha = 0
     }
 
-    if (pointer.position.y >= this.padding.top && 
+    if ( this.minionOnHand.alpha && 
+      pointer.position.y >= this.padding.top && 
         pointer.position.y < this.padding.top + this.dancing.cols*this.cellHeight) {
       this.cursor.j = (~~((pointer.position.y-this.padding.top) / this.cellHeight))
+      this.minionOnHand.alpha = 0.6
+    } else {
+      this.minionOnHand.alpha = 0
+    }
+    
+    if (this.minionOnHand.alpha) {
       this.minionOnHand.y = this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
+      this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
     }
   }
 
