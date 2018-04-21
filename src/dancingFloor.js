@@ -24,7 +24,8 @@ export default class DancingFloor {
       this.cells.push([])
       for (let i = 0; i < this.cols; i++) {
         let cell = new Cell({
-          sprite: this.add.sprite(i*this.cellWidth + offsetX, j*this.cellHeight + offsetY, 'cell')
+          sprite: this.add.sprite(i*this.cellWidth + offsetX, j*this.cellHeight + offsetY, 'cell'),
+          text: this.add.text(i*this.cellWidth + this.x + 5, j*this.cellHeight + this.y + 5, '', {fontSize: 25, color: '#f33'})
         })
         this.cells[j].push(cell)
       }
@@ -66,7 +67,7 @@ export default class DancingFloor {
       for (var li = lowerLimitX; li <= upperLimitX; li++) {
         let value = localRow[li - (i - radiusX)]
         if (value !== 0) {
-          this.cells[lj][li].affects(properties.danceTint)
+          this.cells[lj][li].affects(properties.affectValue, properties.danceTint)
         }
       }
     }
@@ -92,7 +93,10 @@ export default class DancingFloor {
 class Cell {
   constructor (config) {
     this.sprite = config.sprite
+    this.displayText = config.text
     this.empty = true
+    this.value = 'X'
+
   }
 
   addMinion (minion) {
@@ -101,8 +105,23 @@ class Cell {
     this.empty = false
     return true
   }
-  affects (color) {
+
+  affects (value, color) {
     if(!this.empty) return false
-    this.sprite.tint = color
+    if (this.value == 'X') {
+      this.value = 0
+    }
+    this.value += value
+
+    if (this.value === 0) {
+      this.sprite.tint = 0x66ffff
+    }
+
+    if (this.value === value) {
+      this.sprite.tint = color
+    }
+
+    this.displayText.setText(''+this.value)
+
   }
 }

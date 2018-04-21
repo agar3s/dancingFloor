@@ -13,10 +13,12 @@ const PLAYER = {
 
 const CONFIG_COLORS = {
   P1: {
-    danceTint: 0x66ff66
+    danceTint: 0x66ff66,
+    affectValue: 1
   },
   P2: {
-    danceTint: 0x6666ff
+    danceTint: 0x6666ff,
+    affectValue: -1
   }
 }
 
