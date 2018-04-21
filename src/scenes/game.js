@@ -25,7 +25,7 @@ class GameScene extends Phaser.Scene {
   create () {
 
     // setup a dancing floor of 6x6 cells with a fixed size
-    let dancing = new DancingFloor({
+    this.dancing = new DancingFloor({
       scene: this,
       cols: 6,
       rows: 6,
@@ -34,12 +34,17 @@ class GameScene extends Phaser.Scene {
     })
 
     // adds a miniom on a random place
-    let i = ~~(Math.random()*6)
-    let j = ~~(Math.random()*6)
-    dancing.addsMinion(i, j)
+    this.addMinion(~~(Math.random()*6), ~~(Math.random()*6))
+    //this.addMinion(~~(Math.random()*6), ~~(Math.random()*6))
   }
 
   update (time, dt) {
+  }
+
+  addMinion (i, j) {
+    if (!this.dancing.addMinion(i, j)) {
+      console.log('Error!!')
+    }
   }
 }
 

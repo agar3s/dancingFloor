@@ -31,18 +31,22 @@ export default class DancingFloor {
     }
   }
 
-  addsMinion (i, j) { 
-    let minionOffsetX = this.x + 40
-    let minionOffsetY = this.y + 40
-    this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, 'minion')
+  addMinion (i, j) { 
+
+    //let minionOffsetX = this.x + this.cellWidth/2
+    //let minionOffsetY = this.y + this.cellHeight/2
+
+    if(!this.cells[j][i].addMinion()) return false
+    let minionOffsetX = this.x + 30 + Math.random()*35
+    let minionOffsetY = this.y + 30 + Math.random()*35
+
 
     let affectEffect = [
       [0,1,0],
       [1,0,1],
       [0,1,0]
     ]
-
-    this.cells[j][i].addMinion()
+    this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, 'minion')
 
     let radiusX = (affectEffect[0].length - 1) / 2
     let radiusY = (affectEffect.length - 1) / 2
@@ -61,6 +65,8 @@ export default class DancingFloor {
         }
       }
     }
+    
+    return true
   }
 }
 
@@ -68,10 +74,14 @@ export default class DancingFloor {
 class Cell {
   constructor (config) {
     this.sprite = config.sprite
+    this.empty = true
   }
 
   addMinion (minion) {
+    if (!this.empty) return false
     this.sprite.tint = 0xff0000
+    this.empty = false
+    return true
   }
   affects () {
     this.sprite.tint = 0x00ff00
