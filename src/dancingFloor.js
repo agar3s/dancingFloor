@@ -31,13 +31,13 @@ export default class DancingFloor {
     }
   }
 
-  addMinion (i, j) { 
-
+  addMinion (i, j, properties) { 
+    console.log(properties)
     //let minionOffsetX = this.x + this.cellWidth/2
     //let minionOffsetY = this.y + this.cellHeight/2
 
     // check available space
-    if(!this.cells[j][i].addMinion()) return false
+    if(!this.cells[j][i].addMinion(properties)) return false
     let minionOffsetX = this.x + 50
     let minionOffsetY = this.y + 50
 
@@ -66,7 +66,7 @@ export default class DancingFloor {
       for (var li = lowerLimitX; li <= upperLimitX; li++) {
         let value = localRow[li - (i - radiusX)]
         if (value !== 0) {
-          this.cells[lj][li].affects()
+          this.cells[lj][li].affects(properties.danceTint)
         }
       }
     }
@@ -97,11 +97,12 @@ class Cell {
 
   addMinion (minion) {
     if (!this.empty) return false
-    this.sprite.tint = 0xff0000
+    this.sprite.tint = minion.danceTint
     this.empty = false
     return true
   }
-  affects () {
-    this.sprite.tint = 0x00ff00
+  affects (color) {
+    if(!this.empty) return false
+    this.sprite.tint = color
   }
 }

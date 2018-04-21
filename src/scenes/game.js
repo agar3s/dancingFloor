@@ -6,6 +6,20 @@ const STATUS = {
   PLACING_CARD: 1
 }
 
+const PLAYER = {
+  P1: 'P1',
+  P2: 'P2'
+}
+
+const CONFIG_COLORS = {
+  P1: {
+    danceTint: 0x66ff66
+  },
+  P2: {
+    danceTint: 0x6666ff
+  }
+}
+
 class GameScene extends Phaser.Scene {
   constructor() {
     super({key: 'gameScene'})
@@ -25,6 +39,8 @@ class GameScene extends Phaser.Scene {
     this.cardHeight = 120
 
     this.status = STATUS.PLAY_CARD
+
+    this.currentPlayer = PLAYER.P1
   }
 
   preload () {
@@ -76,7 +92,7 @@ class GameScene extends Phaser.Scene {
   }
 
   addMinion (i, j) {
-    if (!this.dancing.addMinion(i, j)) {
+    if (!this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer])) {
       console.log('Error!!')
     }
   }
@@ -126,9 +142,12 @@ class GameScene extends Phaser.Scene {
     if (this.status === STATUS.PLACING_CARD) {
       // only allows to add a card if there is a valid position in the dancing floor
       if ( this.cursor.validPosition ) {
+        // play a card
         this.addMinion(this.cursor.i, this.cursor.j)
         this.minionOnHand.alpha = 0
         this.status = STATUS.PLAY_CARD
+        // ends turn
+        this.endsTurn()
       }
     } else if (this.status === STATUS.PLAY_CARD) {
       
@@ -156,6 +175,15 @@ class GameScene extends Phaser.Scene {
       card.y += 15
       this.indexCardSelected = -1
     }
+  }
+
+  endsTurn () {
+    if (this.currentPlayer === PLAYER.P1) {
+      this.currentPlayer = PLAYER.P2
+    } else {
+      this.currentPlayer = PLAYER.P1
+    }
+    console.log(this.currentPlayer)
   }
 }
 
