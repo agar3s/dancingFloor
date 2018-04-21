@@ -1,4 +1,5 @@
 
+import DancingFloor from '../dancingFloor'
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -24,21 +25,18 @@ class GameScene extends Phaser.Scene {
   create () {
 
     // setup a dancing floor of 6x6 cells with a fixed size
-    let offsetX = this.padding.left + this.cellWidth/2
-    let offsetY = this.padding.top + this.cellHeight/2
-
-    for (let j = 0; j < this.rows; j++) {
-      for (let i = 0; i < this.cols; i++) {
-        this.add.sprite(i*this.cellWidth + offsetX, j*this.cellHeight + offsetY, 'cell')
-      }
-    }
+    let dancing = new DancingFloor({
+      scene: this,
+      cols: 6,
+      rows: 6,
+      x: this.padding.left,
+      y: this.padding.top
+    })
 
     // adds a miniom on a random place
     let i = ~~(Math.random()*6)
     let j = ~~(Math.random()*6)
-    let minionOffsetX = this.padding.left + 40
-    let minionOffsetY = this.padding.top + 40
-    this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, 'minion')
+    dancing.addsMinion(i, j)
   }
 
   update (time, dt) {
