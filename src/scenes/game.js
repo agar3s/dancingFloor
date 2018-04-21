@@ -1,6 +1,11 @@
 
 import DancingFloor from '../dancingFloor'
 
+const STATUS = {
+  PLAY_CARD: 0,
+  PLACING_CARD: 1
+}
+
 class GameScene extends Phaser.Scene {
   constructor() {
     super({key: 'gameScene'})
@@ -15,12 +20,17 @@ class GameScene extends Phaser.Scene {
     }
     this.cellWidth = 100
     this.cellHeight = 100
+
+    this.cardWidth = 80
+    this.cardHeight = 120
+
+    this.status = STATUS.PLAY_CARD
   }
 
   preload () {
     this.load.spritesheet('cell', '../assets/CellFloor.png', { frameWidth: 100, frameHeight: 100 })
     this.load.spritesheet('minion', '../assets/minion.png', { frameWidth: 60, frameHeight: 60 })
-    this.load.spritesheet('baseCard', '../assets/baseCard.png', { frameWidth: 80, frameHeight: 120 })
+    this.load.spritesheet('baseCard', '../assets/baseCard.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
   }
 
   create () {
@@ -41,20 +51,25 @@ class GameScene extends Phaser.Scene {
     // register a basic mouse listener
     this.minionOnHand = this.add.sprite(0, 0, 'minion')
 
-    this.minionOnHand.alpha = 0.6
+    this.minionOnHand.alpha = 0
     this.cursor = {
       boardCoords: {i:0, j:0}
     }
     this.input.on('pointermove', this.onMouseMove, this)
     this.input.on('pointerdown', this.onMouseClick, this)
+    this.input.on('pointerover', this.onPointerHover, this)
+    this.input.on('pointerout', this.onPointerOut, this)
 
 
     // displays the hand
-    this.add.sprite(200, 700, 'baseCard')
-    this.add.sprite(300, 700, 'baseCard')
-    this.add.sprite(400, 700, 'baseCard')
-    this.add.sprite(500, 700, 'baseCard')
-    this.add.sprite(600, 700, 'baseCard')
+    this.indexCardSelected = -1
+    this.cards = []
+    for (var i = 0; i < 5; i++) {
+      let card = this.add.sprite(i*100 + 200, 700, 'baseCard')
+      card.setInteractive()
+      card.setData('index', i)
+      this.cards.push(card)
+    }
   }
 
   update (time, dt) {
@@ -67,34 +82,80 @@ class GameScene extends Phaser.Scene {
   }
 
   onMouseMove (pointer) {
-    let positionUpdated = false
-    if (pointer.position.x >= this.padding.left && 
-        pointer.position.x < this.padding.left + this.dancing.rows*this.cellWidth) {
-      this.cursor.i = (~~((pointer.position.x-this.padding.left) / this.cellWidth))
-      positionUpdated = true
-    }
+    let coords = {x: pointer.position.x, y: pointer.position.y}
 
-    if ( positionUpdated && 
-      pointer.position.y >= this.padding.top && 
-        pointer.position.y < this.padding.top + this.dancing.cols*this.cellHeight) {
-      this.cursor.j = (~~((pointer.position.y-this.padding.top) / this.cellHeight))
-      positionUpdated = true
-    } else {
-      positionUpdated = false
-    }
-    
-    if (positionUpdated) {
-      this.minionOnHand.alpha = 0.6
-      this.minionOnHand.y = this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
-      this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
-    } else {
-      this.minionOnHand.alpha = 0
+    let nextPosition = {x: coords.x, y: coords.y}
+
+    if (this.status === STATUS.PLAY_CARD) {
+
+
+    } else if (this.status === STATUS.PLACING_CARD) {
+      this.cursor.validPosition = false
+      
+      if (coords.x >= this.padding.left && 
+          coords.x < this.padding.left + this.dancing.rows*this.cellWidth) {
+        this.cursor.i = (~~((coords.x-this.padding.left) / this.cellWidth))
+        this.cursor.validPosition = true
+      }
+
+      if ( this.cursor.validPosition && 
+        coords.y >= this.padding.top && 
+          coords.y < this.padding.top + this.dancing.cols*this.cellHeight) {
+        this.cursor.j = (~~((coords.y-this.padding.top) / this.cellHeight))
+      } else {
+        this.cursor.validPosition = false
+      }
+      
+      if (this.cursor.validPosition) {
+        this.minionOnHand.alpha = 0.6
+        this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
+        this.minionOnHand.y = this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
+        this.minionOnHand.tint = 0xffffff
+      } else {
+        this.minionOnHand.x = nextPosition.x
+        this.minionOnHand.y = nextPosition.y
+        this.minionOnHand.tint = 0xff9999
+      }
     }
   }
 
   onMouseClick (pointer) {
+    let coords = {x: pointer.position.x, y: pointer.position.y}
+
     // creates a new minion on position
-    this.addMinion(this.cursor.i, this.cursor.j)
+    if (this.status === STATUS.PLACING_CARD) {
+      // only allows to add a card if there is a valid position in the dancing floor
+      if ( this.cursor.validPosition ) {
+        this.addMinion(this.cursor.i, this.cursor.j)
+        this.minionOnHand.alpha = 0
+        this.status = STATUS.PLAY_CARD
+      }
+    } else if (this.status === STATUS.PLAY_CARD) {
+      
+      if (this.indexCardSelected != -1) {
+        this.status = STATUS.PLACING_CARD
+        this.cards[this.indexCardSelected].alpha = 0
+        this.minionOnHand.alpha = 0.6
+        this.minionOnHand.x = coords.x
+        this.minionOnHand.y = coords.y
+      }
+    }
+  }
+
+  onPointerHover (event, gameObject) {
+    let card = gameObject[0]
+    if (card) {
+      card.y -= 15
+      this.indexCardSelected = card.getData('index')
+    }
+  }
+
+  onPointerOut (event, gameObject) {
+    let card = gameObject[0]
+    if (card) {
+      card.y += 15
+      this.indexCardSelected = -1
+    }
   }
 }
 
