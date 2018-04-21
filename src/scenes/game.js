@@ -34,8 +34,17 @@ class GameScene extends Phaser.Scene {
     })
 
     // adds a miniom on a random place
-    this.addMinion(~~(Math.random()*6), ~~(Math.random()*6))
     //this.addMinion(~~(Math.random()*6), ~~(Math.random()*6))
+    //this.addMinion(~~(Math.random()*6), ~~(Math.random()*6))
+
+    // register a basic mouse listener
+    this.minionOnHand = this.add.sprite(0, 0, 'minion')
+    this.minionOnHand.alpha = 0.6
+    this.cursor = {
+      boardCoords: {i:0, j:0}
+    }
+    this.input.on('pointermove', this.onMouseMove, this)
+    this.input.on('pointerdown', this.onMouseClick, this)
   }
 
   update (time, dt) {
@@ -45,6 +54,25 @@ class GameScene extends Phaser.Scene {
     if (!this.dancing.addMinion(i, j)) {
       console.log('Error!!')
     }
+  }
+
+  onMouseMove (pointer) {
+    if (pointer.position.x >= this.padding.left && 
+        pointer.position.x < this.padding.left + this.dancing.rows*this.cellWidth) {
+      this.cursor.i = (~~((pointer.position.x-this.padding.left) / this.cellWidth))
+      this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
+    }
+
+    if (pointer.position.y >= this.padding.top && 
+        pointer.position.y < this.padding.top + this.dancing.cols*this.cellHeight) {
+      this.cursor.j = (~~((pointer.position.y-this.padding.top) / this.cellHeight))
+      this.minionOnHand.y = this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
+    }
+  }
+
+  onMouseClick (pointer) {
+    // creates a new minion on position
+    this.addMinion(this.cursor.i, this.cursor.j)
   }
 }
 
