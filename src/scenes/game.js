@@ -10,7 +10,7 @@ class GameScene extends Phaser.Scene {
       top: 20,
       bottom: 20,
       left: 100,
-      top: 20
+      right: 20
     }
     this.cellWidth = 100
     this.cellHeight = 100
@@ -22,16 +22,23 @@ class GameScene extends Phaser.Scene {
   }
 
   create () {
+
+    // setup a dancing floor of 6x6 cells with a fixed size
     let offsetX = this.padding.left + this.cellWidth/2
     let offsetY = this.padding.top + this.cellHeight/2
 
-    for (var j = 0; j < this.rows; j++) {
-      for (var i = 0; i < this.cols; i++) {
+    for (let j = 0; j < this.rows; j++) {
+      for (let i = 0; i < this.cols; i++) {
         this.add.sprite(i*this.cellWidth + offsetX, j*this.cellHeight + offsetY, 'cell')
       }
     }
 
-    this.add.sprite(500, 300, 'minion')
+    // adds a miniom on a random place
+    let i = ~~(Math.random()*6)
+    let j = ~~(Math.random()*6)
+    let minionOffsetX = this.padding.left + 40
+    let minionOffsetY = this.padding.top + 40
+    this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, 'minion')
   }
 
   update (time, dt) {

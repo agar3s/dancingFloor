@@ -3,8 +3,6 @@
 class BootScene extends Phaser.Scene {
   constructor() {
     super({key: 'bootScene'})
-    console.log('load boot')
-    console.log(this.scene)
   }
 
   preload () {
