@@ -90,31 +90,31 @@ class GameScene extends Phaser.Scene {
 
 
     } else if (this.status === STATUS.PLACING_CARD) {
-      this.cursor.validPosition = false
-      
-      if (coords.x >= this.padding.left && 
-          coords.x < this.padding.left + this.dancing.rows*this.cellWidth) {
-        this.cursor.i = (~~((coords.x-this.padding.left) / this.cellWidth))
-        this.cursor.validPosition = true
-      }
+      // move preview minion to
+      this.minionOnHand.x = pointer.position.x
+      this.minionOnHand.y = pointer.position.y
 
-      if ( this.cursor.validPosition && 
-        coords.y >= this.padding.top && 
-          coords.y < this.padding.top + this.dancing.cols*this.cellHeight) {
-        this.cursor.j = (~~((coords.y-this.padding.top) / this.cellHeight))
-      } else {
-        this.cursor.validPosition = false
-      }
+      // apply tint
+      this.minionOnHand.tint = 0xff9999
+
+      // get dancing coords
+      coords = this.dancing.getDanceCoordsFor(
+        coords.x - this.padding.left,
+        coords.y - this.padding.top
+      )
+      // update cursor with coords
+      this.cursor.i = coords.i
+      this.cursor.j = coords.j
+
+      this.cursor.validPosition = coords.i != -1 && coords.j != -1
       
+      // if cursor is valid
       if (this.cursor.validPosition) {
-        this.minionOnHand.alpha = 0.6
+        // move preview minion
         this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
         this.minionOnHand.y = this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
+        // apply tint
         this.minionOnHand.tint = 0xffffff
-      } else {
-        this.minionOnHand.x = nextPosition.x
-        this.minionOnHand.y = nextPosition.y
-        this.minionOnHand.tint = 0xff9999
       }
     }
   }

@@ -36,37 +36,55 @@ export default class DancingFloor {
     //let minionOffsetX = this.x + this.cellWidth/2
     //let minionOffsetY = this.y + this.cellHeight/2
 
+    // check available space
     if(!this.cells[j][i].addMinion()) return false
-    let minionOffsetX = this.x + 30 + Math.random()*35
-    let minionOffsetY = this.y + 30 + Math.random()*35
+    let minionOffsetX = this.x + 50
+    let minionOffsetY = this.y + 50
 
-
-    let affectEffect = [
+    // minion 
+    let danceSpace = [
       [0,1,0],
       [1,0,1],
       [0,1,0]
     ]
+    // add minion
     this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, 'minion')
 
-    let radiusX = (affectEffect[0].length - 1) / 2
-    let radiusY = (affectEffect.length - 1) / 2
+    // get dance radius
+    let radiusX = (danceSpace[0].length - 1) / 2
+    let radiusY = (danceSpace.length - 1) / 2
 
+    // find dance limits in the floor
     let lowerLimitX = ((i-radiusX) < 0) ? 0 : i-radiusX
     let lowerLimitY = ((j-radiusY) < 0) ? 0 : j-radiusY
     let upperLimitX = (i + radiusX >= this.cols) ? this.cols - 1 : i + radiusX
     let upperLimitY = (j + radiusY >= this.rows) ? this.rows - 1 : j + radiusY
 
+    // update cells with the dancing space
     for (var lj = lowerLimitY; lj <= upperLimitY; lj++) {
-      let localRow = affectEffect[lj - (j - radiusY)]
+      let localRow = danceSpace[lj - (j - radiusY)]
       for (var li = lowerLimitX; li <= upperLimitX; li++) {
         let value = localRow[li - (i - radiusX)]
-        if(value!=0) {
+        if (value !== 0) {
           this.cells[lj][li].affects()
         }
       }
     }
     
     return true
+  }
+
+  getDanceCoordsFor (x, y) {
+    let coords = {i: -1, j: -1}
+
+    if (x >= 0 && x < this.rows*this.cellWidth) {
+      coords.i = ~~(x / this.cellWidth)
+    }
+
+    if (coords.i != -1 && y >= 0 && y < this.cols*this.cellHeight) {
+      coords.j = ~~(y / this.cellHeight)
+    }
+    return coords
   }
 }
 
