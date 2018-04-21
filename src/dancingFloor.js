@@ -33,7 +33,6 @@ export default class DancingFloor {
   }
 
   addMinion (i, j, properties) { 
-    console.log(properties)
     //let minionOffsetX = this.x + this.cellWidth/2
     //let minionOffsetY = this.y + this.cellHeight/2
 
@@ -67,7 +66,7 @@ export default class DancingFloor {
       for (var li = lowerLimitX; li <= upperLimitX; li++) {
         let value = localRow[li - (i - radiusX)]
         if (value !== 0) {
-          this.cells[lj][li].affects(properties.affectValue, properties.danceTint)
+          this.cells[lj][li].affects(properties.beat, properties.danceTint)
         }
       }
     }
@@ -95,33 +94,38 @@ class Cell {
     this.sprite = config.sprite
     this.displayText = config.text
     this.empty = true
-    this.value = 'X'
+    this.beat = 'X'
 
   }
 
   addMinion (minion) {
     if (!this.empty) return false
+    if (this.beat != 'X') {
+      // if the beat is different than minion
+      
+      if (this.beat==0 || minion.beat/this.beat < 0) return false
+    }
     this.sprite.tint = minion.danceTint
     this.empty = false
     return true
   }
 
-  affects (value, color) {
+  affects (beat, color) {
     if(!this.empty) return false
-    if (this.value == 'X') {
-      this.value = 0
+    if (this.beat == 'X') {
+      this.beat = 0
     }
-    this.value += value
+    this.beat += beat
 
-    if (this.value === 0) {
+    if (this.beat === 0) {
       this.sprite.tint = 0x66ffff
     }
 
-    if (this.value === value) {
+    if (this.beat === beat) {
       this.sprite.tint = color
     }
 
-    this.displayText.setText(''+this.value)
+    this.displayText.setText(''+this.beat)
 
   }
 }

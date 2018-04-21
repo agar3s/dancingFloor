@@ -14,18 +14,17 @@ const PLAYER = {
 const CONFIG_COLORS = {
   P1: {
     danceTint: 0x66ff66,
-    affectValue: 1
+    beat: 1
   },
   P2: {
     danceTint: 0x6666ff,
-    affectValue: -1
+    beat: -1
   }
 }
 
 class GameScene extends Phaser.Scene {
   constructor() {
     super({key: 'gameScene'})
-    console.log('load game')
     this.rows = 6
     this.cols = 6
     this.padding = {
@@ -94,8 +93,13 @@ class GameScene extends Phaser.Scene {
   }
 
   addMinion (i, j) {
-    if (!this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer])) {
-      console.log('Error!!')
+    if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer])) {
+      this.minionOnHand.alpha = 0
+      this.status = STATUS.PLAY_CARD
+      // ends turn
+      this.endsTurn()
+    } else {
+
     }
   }
 
@@ -146,10 +150,6 @@ class GameScene extends Phaser.Scene {
       if ( this.cursor.validPosition ) {
         // play a card
         this.addMinion(this.cursor.i, this.cursor.j)
-        this.minionOnHand.alpha = 0
-        this.status = STATUS.PLAY_CARD
-        // ends turn
-        this.endsTurn()
       }
     } else if (this.status === STATUS.PLAY_CARD) {
       
@@ -185,7 +185,6 @@ class GameScene extends Phaser.Scene {
     } else {
       this.currentPlayer = PLAYER.P1
     }
-    console.log(this.currentPlayer)
   }
 }
 
