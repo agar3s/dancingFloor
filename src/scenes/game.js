@@ -98,8 +98,11 @@ class GameScene extends Phaser.Scene {
       this.status = STATUS.PLAY_CARD
       // ends turn
       this.endsTurn()
+      let card = this.cards[this.indexCardSelected]
+      card.alpha = 1
+      card.y += 15
     } else {
-
+      console.log('error!')
     }
   }
 
@@ -112,13 +115,8 @@ class GameScene extends Phaser.Scene {
 
 
     } else if (this.status === STATUS.PLACING_CARD) {
-      // move preview minion to
-      this.minionOnHand.x = pointer.position.x
-      this.minionOnHand.y = pointer.position.y
-
-      // apply tint
-      this.minionOnHand.tint = 0xff9999
-
+      this.updatePreviewMinionState(pointer.position.x, pointer.position.y, 0xff9999)
+      
       // get dancing coords
       coords = this.dancing.getDanceCoordsFor(
         coords.x - this.padding.left,
@@ -132,11 +130,10 @@ class GameScene extends Phaser.Scene {
       
       // if cursor is valid
       if (this.cursor.validPosition) {
-        // move preview minion
-        this.minionOnHand.x = this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2
-        this.minionOnHand.y = this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
-        // apply tint
-        this.minionOnHand.tint = 0xffffff
+        this.updatePreviewMinionState(
+          this.cursor.i * this.cellWidth + this.padding.left + this.cellWidth/2,
+          this.cursor.j * this.cellHeight + this.padding.top + this.cellHeight/2
+        )
       }
     }
   }
@@ -156,14 +153,13 @@ class GameScene extends Phaser.Scene {
       if (this.indexCardSelected != -1) {
         this.status = STATUS.PLACING_CARD
         this.cards[this.indexCardSelected].alpha = 0
-        this.minionOnHand.alpha = 0.6
-        this.minionOnHand.x = coords.x
-        this.minionOnHand.y = coords.y
+        this.updatePreviewMinionState(coords.x, coords.y)
       }
     }
   }
 
   onPointerHover (event, gameObject) {
+    if (this.status != STATUS.PLAY_CARD) return
     let card = gameObject[0]
     if (card) {
       card.y -= 15
@@ -172,6 +168,7 @@ class GameScene extends Phaser.Scene {
   }
 
   onPointerOut (event, gameObject) {
+    if (this.status != STATUS.PLAY_CARD) return
     let card = gameObject[0]
     if (card) {
       card.y += 15
@@ -185,6 +182,14 @@ class GameScene extends Phaser.Scene {
     } else {
       this.currentPlayer = PLAYER.P1
     }
+  }
+
+  updatePreviewMinionState (x, y, tint=0xffffff, alpha=0.6) {
+    this.minionOnHand.x = x
+    this.minionOnHand.y = y
+    // apply tint
+    this.minionOnHand.alpha = 0.6
+    this.minionOnHand.tint = tint
   }
 }
 
