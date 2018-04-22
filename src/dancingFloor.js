@@ -84,7 +84,7 @@ export default class DancingFloor {
       for (var li = lowerLimitX; li <= upperLimitX; li++) {
         let value = localRow[li - (i - radiusX)]
         if (value !== 0) {
-          this.cells[lj][li].affects(properties.beat, properties.danceTint)
+          this.cells[lj][li].affects(properties.beat, properties)
         }
       }
     }
@@ -160,14 +160,15 @@ export default class DancingFloor {
 class Cell {
   constructor (config) {
     this.sprite = config.sprite
+    this.sprite.setFrame(4)
     this.displayText = config.text
     this.empty = true
     this.beat = 'X'
     this.minionSprite
 
     this.beatState = 0
-    this.sprite.tint = 0x333333
-    this.baseColor = 0x333333
+    //this.sprite.tint = 0x333333
+    this.baseIndexFrame = 4
   }
 
   addMinion (minion) {
@@ -180,8 +181,9 @@ class Cell {
       if (!this.beatState) return false
     }
     
-    this.baseColor = minion.danceTint
-    this.sprite.tint = minion.danceTint
+    this.baseIndexFrame = minion.danceFrame
+    //this.sprite.tint = minion.danceTint
+    this.sprite.setFrame(minion.danceFrame)
 
     this.empty = false
     return true
@@ -191,7 +193,7 @@ class Cell {
     this.minionSprite = minionSprite
   }
 
-  affects (beat, color) {
+  affects (beat, properties) {
     //if(!this.empty) return false
     if (this.beat == 'X') {
       this.beat = 0
@@ -199,13 +201,15 @@ class Cell {
     this.beat += beat
 
     if (this.beat === 0) {
-      this.baseColor = 0xFDE437
-      this.sprite.tint = 0xFDE437
+      this.baseIndexFrame = 0
+      //this.sprite.tint = 0xFDE437
+      this.sprite.setFrame(0)
     }
 
     if (this.beat === beat) {
-      this.sprite.tint = color
-      this.baseColor = color
+      //this.sprite.tint = color
+      this.sprite.setFrame(properties.danceFrame)
+      this.baseIndexFrame = properties.danceFrame
     }
 
     this.displayText.setText(''+this.beat)
@@ -218,11 +222,18 @@ class Cell {
     }
     //this.sprite.scaleX *= -1
     this.beatState ^= Math.random()>0.5?0:1
-    let randomColor = this.baseColor
-    if(this.baseColor == 0x333333) {
-      randomColor = 0xFF0066
+    let randomColor = this.baseIndexFrame
+    if(this.baseIndexFrame == 4) {
+      randomColor = 1
     }
-    this.sprite.tint = this.beatState?randomColor:this.baseColor
+
+    if(this.beatState) {
+      this.sprite.setFrame(randomColor)
+    } else {
+      this.sprite.setFrame(this.baseIndexFrame)
+    }
+    //this.sprite.tint = this.beatState?randomColor:this.baseIndexFrame
+
     this.sprite.alpha = 1
 
     tweenManager.add({

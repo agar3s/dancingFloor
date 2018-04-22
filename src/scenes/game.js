@@ -16,10 +16,12 @@ const PLAYER = {
 const CONFIG_COLORS = {
   P1: {
     danceTint: 0x96F044,
+    danceFrame: 5,
     beat: 1
   },
   P2: {
     danceTint: 0xdd76dd,
+    danceFrame: 2,
     beat: -1
   }
 }
