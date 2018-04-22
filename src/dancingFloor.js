@@ -2,6 +2,7 @@
 export default class DancingFloor {
   constructor(config) {
     this.add = config.scene.add
+    this.tweens = config.scene.tweens
 
     this.cols = config.cols
     this.rows = config.rows
@@ -146,10 +147,10 @@ export default class DancingFloor {
     return true
   }
 
-  notifyBeat () {
+  notifyBeat (timeInterval) {
     for (let j = 0; j < this.rows; j++) {
       for (let i = 0; i < this.cols; i++) {
-        this.cells[j][i].notifyBeat()
+        this.cells[j][i].notifyBeat(this.tweens, timeInterval)
       }
     }  
   }
@@ -165,7 +166,8 @@ class Cell {
     this.minionSprite
 
     this.beatState = 0
-    this.baseColor = 0xffffff
+    this.sprite.tint = 0x333333
+    this.baseColor = 0x333333
   }
 
   addMinion (minion) {
@@ -195,8 +197,8 @@ class Cell {
     this.beat += beat
 
     if (this.beat === 0) {
-      this.baseColor = 0x66ffff
-      this.sprite.tint = 0x66ffff
+      this.baseColor = 0xFDE437
+      this.sprite.tint = 0xFDE437
     }
 
     if (this.beat === beat) {
@@ -208,13 +210,26 @@ class Cell {
 
   }
 
-  notifyBeat (beat = 0) {
+  notifyBeat (tweenManager, timeInterval, beat = 0) {
     if (this.minionSprite) {
       this.minionSprite.scaleX *= -1
     }
     //this.sprite.scaleX *= -1
     this.beatState ^= Math.random()>0.5?0:1
     let randomColor = this.baseColor - 0x003333
+    if(this.baseColor == 0x333333) {
+      randomColor = 0xFF0066
+    }
     this.sprite.tint = this.beatState?randomColor:this.baseColor
+    this.sprite.alpha = 1
+
+    tweenManager.add({
+      targets: this.sprite,
+      alpha: 0.3,
+      ease: 'Expo.easeIn',
+      duration: timeInterval - 150,
+      delay: 50,
+      repeat: 0
+    })
   }
 }

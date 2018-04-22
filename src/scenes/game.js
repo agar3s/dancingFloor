@@ -15,16 +15,16 @@ const PLAYER = {
 
 const CONFIG_COLORS = {
   P1: {
-    danceTint: 0x66ff66,
+    danceTint: 0x96F044,
     beat: 1
   },
   P2: {
-    danceTint: 0x6666ff,
+    danceTint: 0xbb66ff,
     beat: -1
   }
 }
 
-const AUTOPLAY = true
+const AUTOPLAY = false
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -280,7 +280,7 @@ class GameScene extends Phaser.Scene {
       repeat: 0
     })
 
-    this.dancing.notifyBeat()
+    this.dancing.notifyBeat(this.beatMaster.timeInterval)
   }
 }
 
