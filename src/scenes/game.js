@@ -3,7 +3,8 @@ import DancingFloor from '../dancingFloor'
 
 const STATUS = {
   PLAY_CARD: 0,
-  PLACING_CARD: 1
+  PLACING_CARD: 1,
+  GAME_OVER: 2
 }
 
 const PLAYER = {
@@ -21,6 +22,8 @@ const CONFIG_COLORS = {
     beat: -1
   }
 }
+
+const AUTOPLAY = true
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -42,6 +45,8 @@ class GameScene extends Phaser.Scene {
     this.status = STATUS.PLAY_CARD
 
     this.currentPlayer = PLAYER.P1
+
+    this.cont = 0
   }
 
   preload () {
@@ -90,6 +95,13 @@ class GameScene extends Phaser.Scene {
   }
 
   update (time, dt) {
+    if (AUTOPLAY && this.staus != STATUS.GAME_OVER) {
+      if(this.cont==1) {
+        this.cont = 0
+        this.autoPlay()
+      }
+      this.cont++
+    }
   }
 
   addMinion (i, j) {
@@ -104,6 +116,13 @@ class GameScene extends Phaser.Scene {
     } else {
       console.log('error!')
     }
+  }
+
+  autoPlay () {
+    this.indexCardSelected = 0
+    let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer].beat)
+    if (coords.i == -1) return this.status = STATUS.GAME_OVER
+    this.addMinion(coords.i, coords.j)
   }
 
   onMouseMove (pointer) {
@@ -177,11 +196,20 @@ class GameScene extends Phaser.Scene {
   }
 
   endsTurn () {
+    // check no more space?
+    if (this.dancing.isFull()) {
+      this.status == STATUS.GAME_OVER
+      console.log('game over!!!!')
+      return
+    }
     if (this.currentPlayer === PLAYER.P1) {
       this.currentPlayer = PLAYER.P2
+      // this player can play?
     } else {
       this.currentPlayer = PLAYER.P1
     }
+    let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer])
+    if (coords.i == -1) console.log('no more moves for' , this.currentPlayer)
   }
 
   updatePreviewMinionState (x, y, tint=0xffffff, alpha=0.6) {

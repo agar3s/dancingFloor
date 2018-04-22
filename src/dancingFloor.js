@@ -30,6 +30,8 @@ export default class DancingFloor {
         this.cells[j].push(cell)
       }
     }
+
+    this.globalBeatText = this.add.text(10, 10, 'X', {fontSize: 40, color: '#fff'})
   }
 
   addMinion (i, j, properties) { 
@@ -44,7 +46,7 @@ export default class DancingFloor {
     // minion 
     let danceSpace = [
       [0,1,0],
-      [1,0,1],
+      [1,1,1],
       [0,1,0]
     ]
     // add minion
@@ -70,6 +72,8 @@ export default class DancingFloor {
         }
       }
     }
+
+    this.calculateCurrentPoints()
     
     return true
   }
@@ -85,6 +89,46 @@ export default class DancingFloor {
       coords.j = ~~(y / this.cellHeight)
     }
     return coords
+  }
+
+  calculateCurrentPoints () {
+    let totalBeat = 0
+    for (let j = 0; j < this.rows; j++) {
+      for (let i = 0; i < this.cols; i++) {
+        let beat = this.cells[j][i].beat
+        if (beat != 'X') totalBeat += beat
+      }
+    }
+    this.globalBeatText.setText('' + totalBeat)
+  }
+
+  getRandomAvailableLocation (beat) {
+    let availableLocations = []
+    for (let j = 0; j < this.rows; j++) {
+      for (let i = 0; i < this.cols; i++) {
+        let cell = this.cells[j][i]
+        if (!cell.empty) continue
+        let cellbeat = cell.beat
+        if ((cellbeat == 'X') || (cellbeat != 0 && cellbeat/beat > 0)) {
+          availableLocations.push([i, j])
+        }
+      }
+    }
+    let possibleCells = availableLocations.length
+    if (possibleCells == 0) return {i: -1, j: -1}
+    let randomIndex = ~~(Math.random()*possibleCells)
+    return {
+      i: availableLocations[randomIndex][0],
+      j: availableLocations[randomIndex][1]
+    }
+  }
+
+  isFull () {
+    let random = this.getRandomAvailableLocation(1)
+    if (random.i != -1) return false
+    random = this.getRandomAvailableLocation(-1)
+    if (random.i != -1) return false
+    return true
   }
 }
 
@@ -111,7 +155,7 @@ class Cell {
   }
 
   affects (beat, color) {
-    if(!this.empty) return false
+    //if(!this.empty) return false
     if (this.beat == 'X') {
       this.beat = 0
     }
