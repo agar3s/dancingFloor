@@ -10,7 +10,7 @@ export default class BeatMaster {
     this.listener = config.listener
   }
 
-  setTempo (tempo = 0) {
+  setTempo (tempo = 2) {
     this.tempo = TEMPO[tempo]
     this.timeInterval = 60*1000 / this.tempo
   }

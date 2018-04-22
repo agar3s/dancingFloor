@@ -59,7 +59,12 @@ export default class DancingFloor {
     }
     let danceSpace = spaceTypes[type]
     // add minion
-    this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, `minion${type}`)
+    let minionSprite = this.add.sprite(
+      i*this.cellWidth + minionOffsetX,
+      j*this.cellHeight + minionOffsetY,
+      `minion${type}`
+    )
+    this.cells[j][i].setMinion(minionSprite)
 
     // get dance radius
     let radiusX = (danceSpace[0].length - 1) / 2
@@ -139,6 +144,14 @@ export default class DancingFloor {
     if (random.i != -1) return false
     return true
   }
+
+  notifyBeat () {
+    for (let j = 0; j < this.rows; j++) {
+      for (let i = 0; i < this.cols; i++) {
+        this.cells[j][i].notifyBeat()
+      }
+    }  
+  }
 }
 
 // helper class
@@ -148,7 +161,7 @@ class Cell {
     this.displayText = config.text
     this.empty = true
     this.beat = 'X'
-
+    this.minionSprite
   }
 
   addMinion (minion) {
@@ -161,6 +174,10 @@ class Cell {
     this.sprite.tint = minion.danceTint
     this.empty = false
     return true
+  }
+
+  setMinion(minionSprite) {
+    this.minionSprite = minionSprite
   }
 
   affects (beat, color) {
@@ -180,5 +197,13 @@ class Cell {
 
     this.displayText.setText(''+this.beat)
 
+  }
+
+  notifyBeat () {
+    if (this.minionSprite) {
+      this.minionSprite.scaleX *= -1
+    }
+    //this.sprite.scaleX *= -1
+    this.sprite.tint ^= ~~(Math.random()*0xffffff)
   }
 }

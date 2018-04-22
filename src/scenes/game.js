@@ -24,7 +24,7 @@ const CONFIG_COLORS = {
   }
 }
 
-const AUTOPLAY = false
+const AUTOPLAY = true
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -121,7 +121,7 @@ class GameScene extends Phaser.Scene {
 
   update (time, dt) {
     if (AUTOPLAY && this.staus != STATUS.GAME_OVER) {
-      if(this.cont==1) {
+      if(this.cont==30) {
         this.cont = 0
         this.autoPlay()
       }
@@ -279,6 +279,8 @@ class GameScene extends Phaser.Scene {
       delay: 32,
       repeat: 0
     })
+
+    this.dancing.notifyBeat()
   }
 }
 
