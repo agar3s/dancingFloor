@@ -199,6 +199,9 @@ class GameScene extends Phaser.Scene {
     // check no more space?
     if (this.dancing.isFull()) {
       this.status == STATUS.GAME_OVER
+      if(this.dancing.globalBeat>0) console.log('player1 wins')
+      else if(this.dancing.globalBeat<0) console.log('player2 wins')
+      else console.log('draw!')
       console.log('game over!!!!')
       return
     }
@@ -208,8 +211,11 @@ class GameScene extends Phaser.Scene {
     } else {
       this.currentPlayer = PLAYER.P1
     }
-    let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer])
-    if (coords.i == -1) console.log('no more moves for' , this.currentPlayer)
+    let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer].beat)
+    if (coords.i == -1) {
+      console.log('player ', this.currentPlayer, 'loses')
+      this.endsTurn()
+    }
   }
 
   updatePreviewMinionState (x, y, tint=0xffffff, alpha=0.6) {

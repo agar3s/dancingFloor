@@ -31,6 +31,7 @@ export default class DancingFloor {
       }
     }
 
+    this.globalBeat = 0
     this.globalBeatText = this.add.text(10, 10, 'X', {fontSize: 40, color: '#fff'})
   }
 
@@ -92,14 +93,14 @@ export default class DancingFloor {
   }
 
   calculateCurrentPoints () {
-    let totalBeat = 0
+    this.globalBeat = 0
     for (let j = 0; j < this.rows; j++) {
       for (let i = 0; i < this.cols; i++) {
         let beat = this.cells[j][i].beat
-        if (beat != 'X') totalBeat += beat
+        if (beat != 'X') this.globalBeat += beat
       }
     }
-    this.globalBeatText.setText('' + totalBeat)
+    this.globalBeatText.setText('' + this.globalBeat)
   }
 
   getRandomAvailableLocation (beat) {
