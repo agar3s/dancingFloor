@@ -172,6 +172,7 @@ class Cell {
 
   addMinion (minion) {
     if (!this.empty) return false
+    if (!this.beatState) return false
     if (this.beat != 'X') {
       // if the beat is different than minion
       
@@ -216,7 +217,7 @@ class Cell {
     }
     //this.sprite.scaleX *= -1
     this.beatState ^= Math.random()>0.5?0:1
-    let randomColor = this.baseColor - 0x003333
+    let randomColor = this.baseColor
     if(this.baseColor == 0x333333) {
       randomColor = 0xFF0066
     }
@@ -225,10 +226,10 @@ class Cell {
 
     tweenManager.add({
       targets: this.sprite,
-      alpha: 0.3,
+      alpha: 0.4,
       ease: 'Expo.easeIn',
-      duration: timeInterval - 150,
-      delay: 50,
+      duration: timeInterval - 100 - 80,
+      delay: 80,
       repeat: 0
     })
   }

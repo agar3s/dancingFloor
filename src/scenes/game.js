@@ -19,12 +19,12 @@ const CONFIG_COLORS = {
     beat: 1
   },
   P2: {
-    danceTint: 0xbb66ff,
+    danceTint: 0xdd76dd,
     beat: -1
   }
 }
 
-const AUTOPLAY = false
+const AUTOPLAY = true
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -134,16 +134,18 @@ class GameScene extends Phaser.Scene {
 
   addMinion (i, j) {
     let card = this.cards[this.indexCardSelected]
+    this.status = STATUS.PLAY_CARD
+    this.minionOnHand.alpha = 0
+    card.alpha = 1
+    card.y += 15
+    
     if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer], card.getData('type'))) {
-      this.minionOnHand.alpha = 0
-      this.status = STATUS.PLAY_CARD
-      // ends turn
-      this.endsTurn()
-      card.alpha = 1
-      card.y += 15
+      
     } else {
-      console.log('error!')
+      console.log('lose the turn')
     }
+
+    this.endsTurn()
   }
 
   autoPlay () {
