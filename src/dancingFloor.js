@@ -172,11 +172,12 @@ class Cell {
 
   addMinion (minion) {
     if (!this.empty) return false
-    if (!this.beatState) return false
     if (this.beat != 'X') {
       // if the beat is different than minion
       
       if (this.beat==0 || minion.beat/this.beat < 0) return false
+    } else {
+      if (!this.beatState) return false
     }
     
     this.baseColor = minion.danceTint

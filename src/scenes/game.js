@@ -24,7 +24,7 @@ const CONFIG_COLORS = {
   }
 }
 
-const AUTOPLAY = true
+const AUTOPLAY = false
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -106,8 +106,15 @@ class GameScene extends Phaser.Scene {
     }
 
     // beat master
-    this.beatBall = this.add.sprite(750, 40, 'beatBall')
+    this.beatBalls = []
+    this.beatIndex = 0
+    this.previousBeatIndex = 0
+    for (var i = 0; i < 8; i++) {
+      this.beatBalls.push(this.add.sprite(750, 40 + 60*i, 'beatBall'))
+    }
+
     this.beatSound = this.sound.add('beatAudio1')
+
     console.log('asddas')
     console.log(this.beatSound, 'asddas')
     this.beatSound.volume = 0.1
@@ -134,11 +141,6 @@ class GameScene extends Phaser.Scene {
 
   addMinion (i, j) {
     let card = this.cards[this.indexCardSelected]
-    this.status = STATUS.PLAY_CARD
-    this.minionOnHand.alpha = 0
-    card.alpha = 1
-    card.y += 15
-    
     if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer], card.getData('type'))) {
       
     } else {
@@ -227,6 +229,16 @@ class GameScene extends Phaser.Scene {
 
   endsTurn () {
     this.turns += 1
+
+    // restore cards
+    let card = this.cards[this.indexCardSelected]
+    this.status = STATUS.PLAY_CARD
+    if (card) {
+      card.alpha = 1
+      card.y += 15
+    }
+    this.minionOnHand.alpha = 0
+
     // check no more space?
     if (this.dancing.isFull()) {
       this.status == STATUS.GAME_OVER
@@ -241,6 +253,9 @@ class GameScene extends Phaser.Scene {
       // this player can play?
     } else {
       this.currentPlayer = PLAYER.P1
+    }
+    for (var i = 0; i < this.beatBalls.length; i++) {
+      this.beatBalls[i].tint = CONFIG_COLORS[this.currentPlayer].danceTint
     }
     let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer].beat)
     if (coords.i == -1) {
@@ -269,18 +284,32 @@ class GameScene extends Phaser.Scene {
 
   notifyBeat () {
     this.detune++
-    this.beatBall.alpha = 1
-    this.beatSound.play()
-    //this.beatSound.setDetune(this.detune*100)
-    //console.log(this.detune)
-    this.tweens.add({
-      targets: this.beatBall,
+
+    if (this.previousBeatIndex == 7) {
+      //this.endsTurn()
+      // not ready
+    }
+
+    this.beatBalls[this.previousBeatIndex].alpha = 1
+
+    this.beatBalls[this.beatIndex].alpha = 1
+    let tween = this.tweens.add({
+      targets: this.beatBalls[this.beatIndex],
       alpha: 0,
       ease: 'Expo.easeIn',
-      duration: this.beatMaster.timeInterval - 150,
+      duration: this.beatMaster.timeInterval - 50,
       delay: 32,
       repeat: 0
     })
+
+
+    this.previousBeatIndex = this.beatIndex
+    this.beatIndex++
+    if(this.beatIndex==8) this.beatIndex = 0
+  
+    this.beatSound.play()
+    //this.beatSound.setDetune(this.detune*100)
+    //console.log(this.detune)
 
     this.dancing.notifyBeat(this.beatMaster.timeInterval)
   }
