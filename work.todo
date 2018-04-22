@@ -9,38 +9,43 @@ target sprint
 	+----- add a minion 
 		-- could be random
 
------ sprint 2 (basic game for the space) 12 - 14
++----- sprint 2 (basic game for the space) 12 - 14
 	+----- minion takes the dancing floor and wins the space
 	+----- player places a minion on the dance floor
 	+----- card represents a minion
 
------ sprint 3 (basic card playing game) 16 - 18
-	----- player chooses a card
-	----- random AI place an adversary
-	----- only can play a card on my turn
-	----- can dispute other player's space
-	----- random card once one is placed on game
++----- sprint 3 (basic card playing game) 17 - 19
+	+----- player chooses a card
+	+----- same control to control an adversary
+	+----- only can play a card on my turn
+	+----- can dispute other player's space
 
------ sprint 4 (play a rythm) 18 - 20 
++----- sprint 4 (victory conditions) 19 - 21
+	+----- how to win the game?
+	+----- different kind of cards with patterns
+		----- at least 2 different patterns
+
+----- sprint 5 (play a rythm - changes the rythm) 21 - 23 
 	----- displays a rhythm/beat (color based, simple sound)
 	----- players must place a card only when the rythm is the correct one
 	----- dance floor changes depending on the rythm
-
------ sprint 5 (changes the rythm) 20 - 22 
 	----- players can change the dancing rythm
 
+--- find a way to make the game ends faster
 ==== sprint
 110 mins
  min 0: list and planning (5 mins)
- min 5: start mini set (40 mins)
+ min 5: start mini set (40 mins) 
  min 45: check and commit (5 mins)
- min 50: check status (3mins)
- min 55: starts mini set (40 mins)
+ min 50: check status (3mins) 
+ min 55: starts mini set (40 mins) 
  min 45: check and commit (5 mins)
  min 95: check status (3mins)
- min 100: mini review (5 mins)
+ min 100: mini review (5 mins) *
 
------ sprint 6 (play testing) 22 - 00 
+----- sprint 6 (play testing) 23 - 01 
+	----- random card once one is placed on game
+	----- random AI place an adversary
 ----- sprint 7 (improve assets) 00 - 02 
 ----- sprint 8 (changes the rythm) 09 - 11 
 ----- sprint 9 (changes the rythm) 11 - 13 

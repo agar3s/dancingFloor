@@ -1,5 +1,6 @@
 
 import DancingFloor from '../dancingFloor'
+import BeatMaster from '../beatMaster'
 
 const STATUS = {
   PLAY_CARD: 0,
@@ -23,7 +24,7 @@ const CONFIG_COLORS = {
   }
 }
 
-const AUTOPLAY = true
+const AUTOPLAY = false
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -57,6 +58,9 @@ class GameScene extends Phaser.Scene {
     // minion 2
     this.load.spritesheet('minion2', '../assets/minion2.png', { frameWidth: 60, frameHeight: 60 })
     this.load.spritesheet('baseCard2', '../assets/card2.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+
+    // ball
+    this.load.spritesheet('beatBall', '../assets/beatBall.png', { frameWidth: 40, frameHeight: 40 })
   }
 
   create () {
@@ -98,6 +102,17 @@ class GameScene extends Phaser.Scene {
       card.setData('type', randomIndex)
       this.cards.push(card)
     }
+
+    // beat master
+    this.beatBall = this.add.sprite(750, 40, 'beatBall')
+    this.light  = this.lights.addLight(750, 40, 200)
+    console.log(this.light)
+
+    this.beatMaster = new BeatMaster({listener: this})
+    // start the beat after 1 second to check async behaviour
+    setTimeout(() => {
+      this.beatMaster.start()
+    }, 1200)
   }
 
   update (time, dt) {
@@ -108,6 +123,9 @@ class GameScene extends Phaser.Scene {
       }
       this.cont++
     }
+
+    // update the beat
+    this.beatMaster.update(time, dt)
   }
 
   addMinion (i, j) {
@@ -172,6 +190,7 @@ class GameScene extends Phaser.Scene {
       if ( this.cursor.validPosition ) {
         // play a card
         this.addMinion(this.cursor.i, this.cursor.j)
+        this.removeCard(this.indexCardSelected)
       }
     } else if (this.status === STATUS.PLAY_CARD) {
       
@@ -236,6 +255,22 @@ class GameScene extends Phaser.Scene {
   drawCard (card) {
     card.y += 15
     this.indexCardSelected = -1
+  }
+
+  removeCard (index) {
+
+  }
+
+  notifyBeat () {
+    this.beatBall.alpha = 1
+    this.tweens.add({
+      targets: this.beatBall,
+      alpha: 0,
+      ease: 'Expo.easeIn',
+      duration: this.beatMaster.timeInterval - 150,
+      delay: 32,
+      repeat: 0
+    })
   }
 }
 
