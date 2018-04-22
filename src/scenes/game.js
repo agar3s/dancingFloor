@@ -49,6 +49,7 @@ class GameScene extends Phaser.Scene {
 
     this.cont = 0
     this.turns = 0
+    this.detune = 0
   }
 
   preload () {
@@ -61,6 +62,7 @@ class GameScene extends Phaser.Scene {
 
     // ball
     this.load.spritesheet('beatBall', '../assets/beatBall.png', { frameWidth: 40, frameHeight: 40 })
+    this.load.audio('beatAudio1', '../assets/beat1.ogg')
   }
 
   create () {
@@ -105,8 +107,10 @@ class GameScene extends Phaser.Scene {
 
     // beat master
     this.beatBall = this.add.sprite(750, 40, 'beatBall')
-    this.light  = this.lights.addLight(750, 40, 200)
-    console.log(this.light)
+    this.beatSound = this.sound.add('beatAudio1')
+    console.log('asddas')
+    console.log(this.beatSound, 'asddas')
+    this.beatSound.volume = 0.1
 
     this.beatMaster = new BeatMaster({listener: this})
     // start the beat after 1 second to check async behaviour
@@ -262,7 +266,11 @@ class GameScene extends Phaser.Scene {
   }
 
   notifyBeat () {
+    this.detune++
     this.beatBall.alpha = 1
+    this.beatSound.play()
+    //this.beatSound.setDetune(this.detune*100)
+    //console.log(this.detune)
     this.tweens.add({
       targets: this.beatBall,
       alpha: 0,
