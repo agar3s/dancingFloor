@@ -64,6 +64,7 @@ export default class DancingFloor {
       j*this.cellHeight + minionOffsetY,
       `minion${type}`
     )
+    minionSprite.tint = properties.danceTint
     this.cells[j][i].setMinion(minionSprite)
 
     // get dance radius
@@ -162,6 +163,9 @@ class Cell {
     this.empty = true
     this.beat = 'X'
     this.minionSprite
+
+    this.beatState = 0
+    this.baseColor = 0xffffff
   }
 
   addMinion (minion) {
@@ -171,7 +175,10 @@ class Cell {
       
       if (this.beat==0 || minion.beat/this.beat < 0) return false
     }
+    
+    this.baseColor = minion.danceTint
     this.sprite.tint = minion.danceTint
+
     this.empty = false
     return true
   }
@@ -188,22 +195,26 @@ class Cell {
     this.beat += beat
 
     if (this.beat === 0) {
+      this.baseColor = 0x66ffff
       this.sprite.tint = 0x66ffff
     }
 
     if (this.beat === beat) {
       this.sprite.tint = color
+      this.baseColor = color
     }
 
     this.displayText.setText(''+this.beat)
 
   }
 
-  notifyBeat () {
+  notifyBeat (beat = 0) {
     if (this.minionSprite) {
       this.minionSprite.scaleX *= -1
     }
     //this.sprite.scaleX *= -1
-    this.sprite.tint ^= ~~(Math.random()*0xffffff)
+    this.beatState ^= Math.random()>0.5?0:1
+    let randomColor = this.baseColor - 0x003333
+    this.sprite.tint = this.beatState?randomColor:this.baseColor
   }
 }
