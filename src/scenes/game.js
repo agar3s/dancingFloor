@@ -47,12 +47,16 @@ class GameScene extends Phaser.Scene {
     this.currentPlayer = PLAYER.P1
 
     this.cont = 0
+    this.turns = 0
   }
 
   preload () {
     this.load.spritesheet('cell', '../assets/CellFloor.png', { frameWidth: 100, frameHeight: 100 })
-    this.load.spritesheet('minion', '../assets/minion.png', { frameWidth: 60, frameHeight: 60 })
-    this.load.spritesheet('baseCard', '../assets/baseCard.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+    this.load.spritesheet('minion1', '../assets/minion.png', { frameWidth: 60, frameHeight: 60 })
+    this.load.spritesheet('baseCard1', '../assets/baseCard.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+    // minion 2
+    this.load.spritesheet('minion2', '../assets/minion2.png', { frameWidth: 60, frameHeight: 60 })
+    this.load.spritesheet('baseCard2', '../assets/card2.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
   }
 
   create () {
@@ -71,7 +75,7 @@ class GameScene extends Phaser.Scene {
     //this.addMinion(~~(Math.random()*6), ~~(Math.random()*6))
 
     // register a basic mouse listener
-    this.minionOnHand = this.add.sprite(0, 0, 'minion')
+    this.minionOnHand = this.add.sprite(0, 0, 'minion1')
 
     this.minionOnHand.alpha = 0
     this.cursor = {
@@ -87,9 +91,11 @@ class GameScene extends Phaser.Scene {
     this.indexCardSelected = -1
     this.cards = []
     for (var i = 0; i < 5; i++) {
-      let card = this.add.sprite(i*100 + 200, 700, 'baseCard')
+      let randomIndex = (~~(Math.random()*2)) + 1
+      let card = this.add.sprite(i*100 + 200, 700, `baseCard${randomIndex}`)
       card.setInteractive()
       card.setData('index', i)
+      card.setData('type', randomIndex)
       this.cards.push(card)
     }
   }
@@ -105,12 +111,12 @@ class GameScene extends Phaser.Scene {
   }
 
   addMinion (i, j) {
-    if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer])) {
+    let card = this.cards[this.indexCardSelected]
+    if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer], card.getData('type'))) {
       this.minionOnHand.alpha = 0
       this.status = STATUS.PLAY_CARD
       // ends turn
       this.endsTurn()
-      let card = this.cards[this.indexCardSelected]
       card.alpha = 1
       card.y += 15
     } else {
@@ -119,7 +125,7 @@ class GameScene extends Phaser.Scene {
   }
 
   autoPlay () {
-    this.indexCardSelected = 0
+    this.indexCardSelected = ~~(Math.random()*5)
     let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer].beat)
     if (coords.i == -1) return this.status = STATUS.GAME_OVER
     this.addMinion(coords.i, coords.j)
@@ -196,13 +202,14 @@ class GameScene extends Phaser.Scene {
   }
 
   endsTurn () {
+    this.turns += 1
     // check no more space?
     if (this.dancing.isFull()) {
       this.status == STATUS.GAME_OVER
       if(this.dancing.globalBeat>0) console.log('player1 wins')
       else if(this.dancing.globalBeat<0) console.log('player2 wins')
       else console.log('draw!')
-      console.log('game over!!!!')
+      console.log('game over!!!!', this.turns, 'turns taken')
       return
     }
     if (this.currentPlayer === PLAYER.P1) {
@@ -213,7 +220,8 @@ class GameScene extends Phaser.Scene {
     }
     let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer].beat)
     if (coords.i == -1) {
-      console.log('player ', this.currentPlayer, 'loses')
+      this.turns -= 1
+      console.log('player ', this.currentPlayer, 'loses. in the ', this.turns, 'th turn')
       this.endsTurn()
     }
   }

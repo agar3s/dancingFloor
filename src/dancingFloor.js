@@ -35,7 +35,7 @@ export default class DancingFloor {
     this.globalBeatText = this.add.text(10, 10, 'X', {fontSize: 40, color: '#fff'})
   }
 
-  addMinion (i, j, properties) { 
+  addMinion (i, j, properties, type) {
     //let minionOffsetX = this.x + this.cellWidth/2
     //let minionOffsetY = this.y + this.cellHeight/2
 
@@ -45,13 +45,21 @@ export default class DancingFloor {
     let minionOffsetY = this.y + 50
 
     // minion 
-    let danceSpace = [
-      [0,1,0],
-      [1,1,1],
-      [0,1,0]
-    ]
+    const spaceTypes = {
+      1:[
+        [0,1,0],
+        [1,1,1],
+        [0,1,0]
+      ],
+      2:[
+        [1,0,1],
+        [0,1,0],
+        [1,0,1]
+      ]
+    }
+    let danceSpace = spaceTypes[type]
     // add minion
-    this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, 'minion')
+    this.add.sprite(i*this.cellWidth + minionOffsetX, j*this.cellHeight + minionOffsetY, `minion${type}`)
 
     // get dance radius
     let radiusX = (danceSpace[0].length - 1) / 2
