@@ -196,8 +196,7 @@ class GameScene extends Phaser.Scene {
     if (this.status != STATUS.PLAY_CARD) return
     let card = gameObject[0]
     if (card) {
-      card.y += 15
-      this.indexCardSelected = -1
+      this.drawCard(card)
     }
   }
 
@@ -232,6 +231,11 @@ class GameScene extends Phaser.Scene {
     // apply tint
     this.minionOnHand.alpha = 0.6
     this.minionOnHand.tint = tint
+  }
+
+  drawCard (card) {
+    card.y += 15
+    this.indexCardSelected = -1
   }
 }
 
