@@ -63,6 +63,10 @@ class GameScene extends Phaser.Scene {
     // ball
     this.load.spritesheet('beatBall', '../assets/beatBall.png', { frameWidth: 40, frameHeight: 40 })
     this.load.audio('beatAudio1', '../assets/beat1.ogg')
+
+    // sounds
+    this.load.audio('bad1', '../assets/bad1.ogg')
+    this.load.audio('bad2', '../assets/bad2.ogg')
   }
 
   create () {
@@ -114,6 +118,8 @@ class GameScene extends Phaser.Scene {
     }
 
     this.beatSound = this.sound.add('beatAudio1')
+    this.badSound1 = this.sound.add('bad1')
+    this.badSound2 = this.sound.add('bad2')
 
     console.log('asddas')
     console.log(this.beatSound, 'asddas')
@@ -145,6 +151,32 @@ class GameScene extends Phaser.Scene {
       
     } else {
       console.log('lose the turn')
+      this.badSound2.play()
+      this.cameras.main.shake(400, 0.005)
+      this.cameras.main.flash(300)
+
+      let emojis = ['😤','😡','😥','🤦','🤷']
+      let alert = this.add.text(
+        (i+0.5)*this.cellWidth + this.padding.left,
+        j*this.cellHeight + this.padding.top,
+        `!${emojis[~~(Math.random()*emojis.length)]}!`,
+        { fontFamily: 'Arial', fontSize: 96, fill: '#ff0000' }
+      )
+
+      alert.setOrigin(0.5, 0.5)
+      alert.rotation = -0.4 + 0.8 * Math.random()
+      this.tweens.add({
+        targets: alert,
+        alpha: 0,
+        ease: 'Expo.easeIn',
+        duration: 500,
+        delay: 100,
+        repeat: 0,
+        onComplete: () => {
+          alert.destroy()
+        }
+      })
+      console.log(alert)
     }
 
     this.endsTurn()
