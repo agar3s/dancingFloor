@@ -26,7 +26,7 @@ const CONFIG_COLORS = {
   }
 }
 
-const AUTOPLAY = true
+const AUTOPLAY = false
 
 class GameScene extends Phaser.Scene {
   constructor() {
