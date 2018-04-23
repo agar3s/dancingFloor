@@ -11756,31 +11756,31 @@ class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.spritesheet('cell', '../assets/CellFloor.png', { frameWidth: 100, frameHeight: 100 });
+    this.load.spritesheet('cell', 'assets/CellFloor.png', { frameWidth: 100, frameHeight: 100 });
 
-    this.load.spritesheet('Card01', '../assets/card01.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
-    this.load.spritesheet('minion1', '../assets/discoCat.png', { frameWidth: 60, frameHeight: 80 });
+    this.load.spritesheet('Card01', 'assets/card01.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
+    this.load.spritesheet('minion1', 'assets/discoCat.png', { frameWidth: 60, frameHeight: 80 });
 
-    this.load.spritesheet('Card02', '../assets/card02.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
-    this.load.spritesheet('minion2', '../assets/lawCat.png', { frameWidth: 60, frameHeight: 80 });
+    this.load.spritesheet('Card02', 'assets/card02.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
+    this.load.spritesheet('minion2', 'assets/lawCat.png', { frameWidth: 60, frameHeight: 80 });
 
-    this.load.spritesheet('Card03', '../assets/card03.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
-    this.load.spritesheet('minion3', '../assets/thrillerCat.png', { frameWidth: 60, frameHeight: 80 });
+    this.load.spritesheet('Card03', 'assets/card03.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
+    this.load.spritesheet('minion3', 'assets/thrillerCat.png', { frameWidth: 60, frameHeight: 80 });
 
-    this.load.spritesheet('Card04', '../assets/card04.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
-    this.load.spritesheet('minion4', '../assets/powersCat.png', { frameWidth: 60, frameHeight: 80 });
+    this.load.spritesheet('Card04', 'assets/card04.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight });
+    this.load.spritesheet('minion4', 'assets/powersCat.png', { frameWidth: 60, frameHeight: 80 });
 
     // ball
-    this.load.spritesheet('beatBall', '../assets/beatBall.png', { frameWidth: 40, frameHeight: 40 });
-    this.load.audio('beatAudio1', '../assets/beat1.ogg');
+    this.load.spritesheet('beatBall', 'assets/beatBall.png', { frameWidth: 40, frameHeight: 40 });
+    this.load.audio('beatAudio1', 'assets/beat1.ogg');
 
     // sounds
-    this.load.audio('bad1', '../assets/bad1.ogg');
-    this.load.audio('bad2', '../assets/bad2.ogg');
-    this.load.audio('good1', '../assets/good1.ogg');
+    this.load.audio('bad1', 'assets/bad1.ogg');
+    this.load.audio('bad2', 'assets/bad2.ogg');
+    this.load.audio('good1', 'assets/good1.ogg');
 
     // font
-    this.load.bitmapFont('defaultFont', '../assets/font_0.png', '../assets/font.xml');
+    this.load.bitmapFont('defaultFont', 'assets/font_0.png', 'assets/font.xml');
   }
 
   create() {
