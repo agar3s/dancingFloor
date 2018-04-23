@@ -48,11 +48,21 @@ export default class DancingFloor {
     // minion 
     const spaceTypes = {
       1:[
+        [0,1,1],
+        [0,1,0],
+        [1,1,0]
+      ],
+      2:[
+        [1,1,0],
+        [0,1,0],
+        [0,1,1]
+      ],
+      3:[
         [0,1,0],
         [1,1,1],
         [0,1,0]
       ],
-      2:[
+      4:[
         [1,0,1],
         [0,1,0],
         [1,0,1]
@@ -62,10 +72,10 @@ export default class DancingFloor {
     // add minion
     let minionSprite = this.add.sprite(
       i*this.cellWidth + minionOffsetX,
-      j*this.cellHeight + minionOffsetY,
+      j*this.cellHeight + minionOffsetY - 30,
       `minion${type}`
     )
-    minionSprite.tint = properties.danceTint
+    //minionSprite.tint = properties.danceTint
     this.cells[j][i].setMinion(minionSprite)
 
     // get dance radius

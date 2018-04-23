@@ -56,11 +56,19 @@ class GameScene extends Phaser.Scene {
 
   preload () {
     this.load.spritesheet('cell', '../assets/CellFloor.png', { frameWidth: 100, frameHeight: 100 })
-    this.load.spritesheet('minion1', '../assets/minion.png', { frameWidth: 60, frameHeight: 60 })
-    this.load.spritesheet('baseCard1', '../assets/baseCard.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
-    // minion 2
-    this.load.spritesheet('minion2', '../assets/minion2.png', { frameWidth: 60, frameHeight: 60 })
-    this.load.spritesheet('baseCard2', '../assets/card2.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+    
+    this.load.spritesheet('Card01', '../assets/card01.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+    this.load.spritesheet('minion1', '../assets/discoCat.png', { frameWidth: 60, frameHeight: 80 })
+    
+    this.load.spritesheet('Card02', '../assets/card02.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+    this.load.spritesheet('minion2', '../assets/lawCat.png', { frameWidth: 60, frameHeight: 80 })
+    
+    this.load.spritesheet('Card03', '../assets/card03.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+    this.load.spritesheet('minion3', '../assets/thrillerCat.png', { frameWidth: 60, frameHeight: 80 })
+    
+    this.load.spritesheet('Card04', '../assets/card04.png', { frameWidth: this.cardWidth, frameHeight: this.cardHeight })
+    this.load.spritesheet('minion4', '../assets/powersCat.png', { frameWidth: 60, frameHeight: 80 })
+    
 
     // ball
     this.load.spritesheet('beatBall', '../assets/beatBall.png', { frameWidth: 40, frameHeight: 40 })
@@ -69,6 +77,7 @@ class GameScene extends Phaser.Scene {
     // sounds
     this.load.audio('bad1', '../assets/bad1.ogg')
     this.load.audio('bad2', '../assets/bad2.ogg')
+    this.load.audio('good1', '../assets/good1.ogg')
   }
 
   create () {
@@ -103,8 +112,8 @@ class GameScene extends Phaser.Scene {
     this.indexCardSelected = -1
     this.cards = []
     for (var i = 0; i < 5; i++) {
-      let randomIndex = (~~(Math.random()*2)) + 1
-      let card = this.add.sprite(i*100 + 200, 700, `baseCard${randomIndex}`)
+      let randomIndex = (~~(Math.random()*4)) + 1
+      let card = this.add.sprite(i*100 + 200, 700, `Card0${randomIndex}`)
       card.setInteractive()
       card.setData('index', i)
       card.setData('type', randomIndex)
@@ -122,10 +131,12 @@ class GameScene extends Phaser.Scene {
     this.beatSound = this.sound.add('beatAudio1')
     this.badSound1 = this.sound.add('bad1')
     this.badSound2 = this.sound.add('bad2')
+    this.goodSound1 = this.sound.add('good1')
 
     console.log('asddas')
     console.log(this.beatSound, 'asddas')
     this.beatSound.volume = 0.1
+    this.goodSound1.volume = 0.1
 
     this.beatMaster = new BeatMaster({listener: this})
     // start the beat after 1 second to check async behaviour
@@ -149,37 +160,41 @@ class GameScene extends Phaser.Scene {
 
   addMinion (i, j) {
     let card = this.cards[this.indexCardSelected]
+    let emojis = ['🤡','👨‍🎤','👩‍🎤','🎅','🤶','🧙‍', '🧛‍', '🧛‍', '👯', '💃', '🕺', '👻', '👽', '🤖', '✨', '🌈', '👾']
+    let good = true
     if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer], card.getData('type'))) {
-      
+      this.badSound2.play()
+      this.goodSound1.play()
     } else {
       console.log('lose the turn')
+      good = false
       this.badSound2.play()
       this.cameras.main.shake(400, 0.005)
       this.cameras.main.flash(300)
 
-      let emojis = ['😤','😡','😥','🤦','🤷']
-      let alert = this.add.text(
-        (i+0.5)*this.cellWidth + this.padding.left,
-        j*this.cellHeight + this.padding.top,
-        `!${emojis[~~(Math.random()*emojis.length)]}!`,
-        { fontFamily: 'Arial', fontSize: 96, fill: '#ff0000' }
-      )
-
-      alert.setOrigin(0.5, 0.5)
-      alert.rotation = -0.4 + 0.8 * Math.random()
-      this.tweens.add({
-        targets: alert,
-        alpha: 0,
-        ease: 'Expo.easeIn',
-        duration: 500,
-        delay: 100,
-        repeat: 0,
-        onComplete: () => {
-          alert.destroy()
-        }
-      })
-      console.log(alert)
+      emojis = ['😤','😡','😥','🤦','🤷']
     }
+
+    let alert = this.add.text(
+      (i+0.5)*this.cellWidth + this.padding.left,
+      j*this.cellHeight + this.padding.top,
+      `!${emojis[~~(Math.random()*emojis.length)]}!`,
+      { fontFamily: 'Arial', fontSize: 96, fill: good?'#00ffff':'#ff0000' }
+    )
+
+    alert.setOrigin(0.5, 0.5)
+    alert.rotation = -0.4 + 0.8 * Math.random()
+    this.tweens.add({
+      targets: alert,
+      alpha: 0,
+      ease: 'Expo.easeIn',
+      duration: 500,
+      delay: 100,
+      repeat: 0,
+      onComplete: () => {
+        alert.destroy()
+      }
+    })
 
     this.endsTurn()
   }
