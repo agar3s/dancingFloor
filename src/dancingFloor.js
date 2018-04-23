@@ -26,14 +26,22 @@ export default class DancingFloor {
       for (let i = 0; i < this.cols; i++) {
         let cell = new Cell({
           sprite: this.add.sprite(i*this.cellWidth + offsetX, j*this.cellHeight + offsetY, 'cell'),
-          text: this.add.text(i*this.cellWidth + this.x + 5, j*this.cellHeight + this.y + 5, '', {fontSize: 25, color: '#f33'})
+          text: this.add.bitmapText(
+            i*this.cellWidth + this.x + 5,
+            j*this.cellHeight + this.y - 15, 'defaultFont', 96)
         })
         this.cells[j].push(cell)
       }
     }
 
     this.globalBeat = 0
-    this.globalBeatText = this.add.text(10, 10, 'X', {fontSize: 40, color: '#fff'})
+    this.globalBeatText = this.add.bitmapText(
+      10,
+      10,
+      'defaultFont',
+      'X',
+      40
+    )
   }
 
   addMinion (i, j, properties, type) {
@@ -172,6 +180,7 @@ class Cell {
     this.sprite = config.sprite
     this.sprite.setFrame(4)
     this.displayText = config.text
+    this.displayText.fontSize = 52
     this.empty = true
     this.beat = 'X'
     this.minionSprite

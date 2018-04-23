@@ -26,7 +26,7 @@ const CONFIG_COLORS = {
   }
 }
 
-const AUTOPLAY = false
+const AUTOPLAY = true
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -78,6 +78,9 @@ class GameScene extends Phaser.Scene {
     this.load.audio('bad1', '../assets/bad1.ogg')
     this.load.audio('bad2', '../assets/bad2.ogg')
     this.load.audio('good1', '../assets/good1.ogg')
+
+    // font
+    this.load.bitmapFont('defaultFont', '../assets/font_0.png', '../assets/font.xml')
   }
 
   create () {
@@ -160,7 +163,7 @@ class GameScene extends Phaser.Scene {
 
   addMinion (i, j) {
     let card = this.cards[this.indexCardSelected]
-    let emojis = ['🤡','👨‍🎤','👩‍🎤','🎅','🤶','🧙‍', '🧛‍', '🧛‍', '👯', '💃', '🕺', '👻', '👽', '🤖', '✨', '🌈', '👾']
+    let emojis = ['Dance','Yeah!','Good!','Perfect','Nice','Right‍', 'Oh yeah!‍', 'Meowww‍', 'WooW', 'AND THE BEAT GOES ON!', 'Rasputin!', 'FEVER', 'ITS SATURDAY\nFEVER NIGHT!']
     let good = true
     if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer], this.minionOnHand.getData('type'))) {
       this.badSound2.play()
@@ -172,15 +175,17 @@ class GameScene extends Phaser.Scene {
       this.cameras.main.shake(400, 0.005)
       this.cameras.main.flash(300)
 
-      emojis = ['😤','😡','😥','🤦','🤷']
+      emojis = ['BAD!', 'NOOOO', 'OH DUDE!', 'FAIL', 'MISS', 'BEAT LOST']
     }
 
-    let alert = this.add.text(
+    let alert = this.add.bitmapText(
       (i+0.5)*this.cellWidth + this.padding.left,
       j*this.cellHeight + this.padding.top,
+      'defaultFont',
       `!${emojis[~~(Math.random()*emojis.length)]}!`,
-      { fontFamily: 'Arial', fontSize: 96, fill: good?'#00ffff':'#ff0000' }
+      96
     )
+    alert.tint = good?0x00ff00:0xff0000
 
     alert.setOrigin(0.5, 0.5)
     alert.rotation = -0.4 + 0.8 * Math.random()
@@ -375,7 +380,7 @@ class GameScene extends Phaser.Scene {
       targets: this.beatBalls[this.beatIndex],
       alpha: 0,
       ease: 'Expo.easeIn',
-      duration: this.beatMaster.timeInterval - 50,
+      duration: this.beatMaster.timeInterval- 100,
       delay: 32,
       repeat: 0
     })

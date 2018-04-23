@@ -9,9 +9,37 @@
     <meta name="MobileOptimized" content="320">
     <meta http-equiv="cleartype" content="on">
     <meta name="format-detection" content="telephone=no">
-    <style></style>
+    <style>
+    	body {
+    		background: #000;
+    	}
+    	canvas {
+    		display: block;
+    		margin: 0 auto;
+    		position: absolute;
+    		left: 0;
+    		right: 0;
+    		top: 0;
+    	}
+    	#main {
+			width: 300px;
+    		color: white;
+    	}
+    </style>
 </head>
 
 <body>
     <canvas id='game' autofocus></canvas>
+    <div id="main">
+    	<h1> I bet that your cats look good in the dance floor</h1>
+    	<p> try to dominate the dancing floor with your frenetic dancing cats</p>
+    	<p> this is a two player game, use the mouse to put the cat in the space
+    		<br>
+    		the first player has the green space
+    		<br>
+    		second player has the purple space
+    		<br>
+    		game ends when there is no more space to put cats
+    	</p>
+    </div>
 </body>
