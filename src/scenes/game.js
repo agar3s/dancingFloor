@@ -253,7 +253,11 @@ class GameScene extends Phaser.Scene {
       
       if (this.indexCardSelected != -1) {
         this.status = STATUS.PLACING_CARD
-        this.cards[this.indexCardSelected].alpha = 0
+        let card = this.cards[this.indexCardSelected]
+        card.alpha = 0
+        this.minionOnHand.destroy()
+        this.minionOnHand = this.add.sprite(0, 0, `minion${card.getData('type')}`)
+
         this.updatePreviewMinionState(coords.x, coords.y)
       }
     }
