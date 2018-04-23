@@ -162,7 +162,7 @@ class GameScene extends Phaser.Scene {
     let card = this.cards[this.indexCardSelected]
     let emojis = ['🤡','👨‍🎤','👩‍🎤','🎅','🤶','🧙‍', '🧛‍', '🧛‍', '👯', '💃', '🕺', '👻', '👽', '🤖', '✨', '🌈', '👾']
     let good = true
-    if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer], card.getData('type'))) {
+    if (this.dancing.addMinion(i, j, CONFIG_COLORS[this.currentPlayer], this.minionOnHand.getData('type'))) {
       this.badSound2.play()
       this.goodSound1.play()
     } else {
@@ -201,6 +201,8 @@ class GameScene extends Phaser.Scene {
 
   autoPlay () {
     this.indexCardSelected = ~~(Math.random()*5)
+    let cardType = this.cards[this.indexCardSelected].getData('type')
+    this.minionOnHand.setData('type', cardType)
     let coords = this.dancing.getRandomAvailableLocation(CONFIG_COLORS[this.currentPlayer].beat)
     if (coords.i == -1) return this.status = STATUS.GAME_OVER
     this.addMinion(coords.i, coords.j)
@@ -257,6 +259,18 @@ class GameScene extends Phaser.Scene {
         card.alpha = 0
         this.minionOnHand.destroy()
         this.minionOnHand = this.add.sprite(0, 0, `minion${card.getData('type')}`)
+        this.minionOnHand.setData('type', card.getData('type'))
+        card.destroy()
+
+        let randomIndex = (~~(Math.random()*4)) + 1
+        let newcard = this.add.sprite(this.indexCardSelected*100 + 200, 700, `Card0${randomIndex}`)
+        newcard.setInteractive()
+        newcard.setData('index', this.indexCardSelected)
+        newcard.setData('type', randomIndex)
+        newcard.alpha = 0
+        
+        this.cards[this.indexCardSelected] = newcard
+
 
         this.updatePreviewMinionState(coords.x, coords.y)
       }
@@ -287,8 +301,19 @@ class GameScene extends Phaser.Scene {
     let card = this.cards[this.indexCardSelected]
     this.status = STATUS.PLAY_CARD
     if (card) {
-      card.alpha = 1
-      card.y += 15
+      card.alpha = 0.8
+      card.scaleX = 2
+      card.scaleY = 2
+      this.tweens.add({
+        targets: card,
+        alpha: 1,
+        scaleX: 1,
+        scaleY: 1,
+        ease: 'Expo.easeIn',
+        duration: 300,
+        delay: 50,
+        repeat: 0
+      })
     }
     this.minionOnHand.alpha = 0
 
